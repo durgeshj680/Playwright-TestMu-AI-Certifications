@@ -31,9 +31,11 @@ post:
 
 uploadArtefacts:
   - name: PlaywrightHTMLReport
-    path: playwright-report/
+    path:
+      - playwright-report/
   - name: ScreenshotsAndVideos
-    path: test-results/
+    path:
+      - test-results/
 
 jobLabel:
   - playwright-102

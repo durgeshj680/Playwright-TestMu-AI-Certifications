@@ -1,7 +1,7 @@
 {
   "name": "playwright-102-assignment",
   "version": "1.0.0",
-  "description": "TestMu AI Playwright 102 Assignment",
+  "description": "Playwright end-to-end tests for LambdaTest Selenium Playground",
   "scripts": {
     "test": "npx playwright test",
     "test:report": "npx playwright show-report"

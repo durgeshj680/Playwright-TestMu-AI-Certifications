@@ -5,7 +5,6 @@ concurrency: 2
 
 env:
   APP_ENV: staging
-  TEST_MESSAGE: "Welcome to TestMu AI"
   LT_USERNAME: ${{ .secrets.LT_USERNAME }}
   LT_ACCESS_KEY: ${{ .secrets.LT_ACCESS_KEY }}
 

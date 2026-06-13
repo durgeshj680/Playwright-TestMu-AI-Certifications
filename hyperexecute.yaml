@@ -24,7 +24,7 @@ pre:
   - npx playwright install chromium
 
 testSuites:
-  - command: npx playwright test --reporter=list,html
+  - npx playwright test --reporter=list,html
 
 post:
   - echo "All test reports collected."

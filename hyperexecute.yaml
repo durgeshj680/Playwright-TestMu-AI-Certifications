@@ -1,7 +1,5 @@
 version: 0.1
-
 runson: win10
-
 parallelism: 2
 concurrency: 2
 
@@ -18,10 +16,12 @@ secrets:
 cacheKey: "{{ checksum \"package.json\" }}"
 cacheDirectories:
   - node_modules
+  - "%APPDATA%\\Microsoft\\Windows\\PowerShell\\PSReadLine"
 
 pre:
   - npm install
   - npx playwright install chromium
+  - npx playwright install-deps chromium
 
 testSuites:
   - npx playwright test --reporter=list,html

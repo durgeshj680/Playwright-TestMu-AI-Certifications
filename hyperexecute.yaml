@@ -1,10 +1,14 @@
 version: 0.1
-runson: win10
+runson: ${matrix.os}
 parallelism: 2
 concurrency: 2
 
+matrix:
+  os: [win, linux]
+
 env:
   APP_ENV: staging
+  TEST_MESSAGE: "Welcome to TestMu AI"
   LT_USERNAME: ${{ .secrets.LT_USERNAME }}
   LT_ACCESS_KEY: ${{ .secrets.LT_ACCESS_KEY }}
 
@@ -15,7 +19,6 @@ secrets:
 cacheKey: "{{ checksum \"package.json\" }}"
 cacheDirectories:
   - node_modules
-  - "%APPDATA%\\Microsoft\\Windows\\PowerShell\\PSReadLine"
 
 pre:
   - npm install

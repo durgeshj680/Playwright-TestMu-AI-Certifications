@@ -5,6 +5,8 @@ test.describe('Scenario 3 - Input Form Submit', () => {
   test('should validate empty-submit error, fill form, and confirm success message', async ({ page }) => {
     await page.goto('https://www.lambdatest.com/selenium-playground/');
     await page.getByRole('link', { name: 'Input Form Submit' }).click();
+    await page.waitForURL(/input-form/);
+    await page.waitForLoadState('networkidle');
 
     await page.locator('button[type="submit"]:has-text("Submit")').click();
 
@@ -27,9 +29,9 @@ test.describe('Scenario 3 - Input Form Submit', () => {
     await page.locator('button[type="submit"]:has-text("Submit")').click();
 
     const successMsg = page.locator('.success-msg');
-    await successMsg.waitFor({ state: 'visible', timeout: 20000 });
     await expect(successMsg).toContainText(
-      'Thanks for contacting us, we will get back to you shortly.'
+      'Thanks for contacting us, we will get back to you shortly.',
+      { timeout: 20000 }
     );
   });
 

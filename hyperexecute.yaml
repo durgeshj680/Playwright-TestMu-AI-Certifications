@@ -1,0 +1,78 @@
+# hyperexecute.yaml
+version: 0.1
+
+# ── Parallelism ────────────────────────────────────────────────────────────────
+parallelism: 2
+concurrency: 2
+
+# ── Run mode ──────────────────────────────────────────────────────────────────
+runson: linux          # primary runner OS (second shard)
+
+matrix:
+  os: [win10, linux]
+  browser: [chrome]
+
+# ── Environment Variables ─────────────────────────────────────────────────────
+env:
+  # Injected as plain env vars; secrets referenced via ${{ .secrets.NAME }}
+  APP_ENV: "staging"
+  TEST_MESSAGE: "Welcome to TestMu AI"
+  # LambdaTest credentials come from Secret Management (see below)
+  LT_USERNAME: ${{ .secrets.LT_USERNAME }}
+  LT_ACCESS_KEY: ${{ .secrets.LT_ACCESS_KEY }}
+
+# ── Secret Management ─────────────────────────────────────────────────────────
+# Secrets are stored in the HyperExecute Secret Vault (dashboard → Secrets)
+# and injected at runtime. Never hard-code credentials here.
+secrets:
+  - LT_USERNAME
+  - LT_ACCESS_KEY
+
+# ── Dependency Caching ────────────────────────────────────────────────────────
+cacheKey: '{{ checksum "package.json" }}'
+cacheDirectories:
+  - node_modules
+  - /root/.cache/ms-playwright   # Playwright browser binaries
+
+# ── Pre Steps (run before tests) ─────────────────────────────────────────────
+preSteps:
+  - name: Install Node dependencies
+    command: npm ci
+  - name: Install Playwright browsers
+    command: npx playwright install --with-deps chromium
+
+# ── Test Commands ─────────────────────────────────────────────────────────────
+testSuites:
+  - command: >
+      RUN_ENV=cloud
+      LT_USERNAME=$LT_USERNAME
+      LT_ACCESS_KEY=$LT_ACCESS_KEY
+      npx playwright test --reporter=list,junit
+    testDiscovery:
+      type: raw
+      mode: dynamic
+      command: find tests -name "*.spec.js" | tr '\n' ','
+
+# ── Post Steps (optional – run after tests) ───────────────────────────────────
+postSteps:
+  - name: Merge JUnit reports
+    command: echo "All test reports collected."
+
+# ── Artifacts Management ──────────────────────────────────────────────────────
+# Collates reports, videos, screenshots, and traces from all parallel shards
+# into a single downloadable ZIP from the HyperExecute dashboard.
+uploadArtefacts:
+  - name: PlaywrightHTMLReport
+    path:
+      - playwright-report/
+  - name: JUnitXML
+    path:
+      - results/results.xml
+  - name: ScreenshotsAndVideos
+    path:
+      - test-results/
+
+# ── Job Labels ────────────────────────────────────────────────────────────────
+jobLabel:
+  - "playwright-102"
+  - "assignment"
